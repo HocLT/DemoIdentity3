@@ -1,0 +1,36 @@
+﻿@page
+@model UserModel
+@{
+}
+
+<h1>User List</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Roles</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Users)
+        {
+            <tr>
+                <td>@item.UserName</td>
+                <td>@item.ListRoles</td>
+                <td>
+                    <form method="post" class="d-inline">
+                        <button name="Input.Id" value="@item.Id"
+                        class="btn btn-primary btn-sm" 
+                        asp-page="./AddUserRole"
+                        >Edit Role</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

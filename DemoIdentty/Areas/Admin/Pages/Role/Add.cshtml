@@ -1,0 +1,31 @@
+﻿@page
+@model AddModel
+@{
+    var title = Model.IsUpdate ? "Update Role" : "Create new Role";
+    var btnText = Model.IsUpdate ? "Update" : "Create";
+}
+
+<h1>@title</h1>
+<partial name="_StatusMessage" model="@Model.StatusMessage" />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Input.Id"/>
+            <input type="hidden" asp-for="IsUpdate" />
+            <div class="form-group">
+                <label asp-for="Input.Name" class="form-label"></label>
+                <input asp-for="Input.Name" class="form-control"/>
+            </div>
+            <button id="add-or-edit-role" type="submit" 
+            asp-page-handler="AddOrUpdate" 
+            class="btn btn-primary">@btnText</button>
+            
+            <a class="btn btn-primary" asp-page="./Index">Role List</a>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

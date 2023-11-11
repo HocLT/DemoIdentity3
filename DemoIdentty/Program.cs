@@ -18,6 +18,13 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores< ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(o =>
+{
+    o.LoginPath = "/Identity/Account/Login";
+    o.LogoutPath = "/Identity/Account/Logout";
+    o.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
+
 builder.Services.Configure<IdentityOptions>(options => {
     // cấu hình mật khẩu
     options.Password.RequireDigit = false;
@@ -39,12 +46,29 @@ builder.Services.Configure<IdentityOptions>(options => {
     // cấu hình đăng nhập
     options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedPhoneNumber = false;
+
 });
 
 builder.Services.AddOptions();
 var mailSettings = builder.Configuration.GetSection("MailSettings");
 builder.Services.Configure<MailSettings>(mailSettings);
-builder.Services.AddTransient<IEmailSender, SendMailService>()
+builder.Services.AddTransient<IEmailSender, SendMailService>();
+
+builder.Services.AddAuthentication().AddGoogle(o =>
+{
+    var ggSection = builder.Configuration.GetSection("Authentication:Google");
+    o.ClientId = ggSection["ClientId"];
+    o.ClientSecret = "/google-login";
+});
+
+builder.Services.AddAuthorization(o =>
+{
+    o.AddPolicy("CanView", policy =>
+    {
+        policy.RequireRole("admin");
+    });
+
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -68,6 +92,12 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+
 app.MapRazorPages();
 
 app.Run();
