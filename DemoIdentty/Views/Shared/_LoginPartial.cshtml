@@ -2,7 +2,7 @@
 @inject SignInManager<DemoIdentty.Data.AppUser> SignInManager
 @inject UserManager<DemoIdentty.Data.AppUser> UserManager
 
-<ul class="navbar-nav">
+<ul class="navbar-nav ml-auto">
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
